@@ -1,0 +1,276 @@
+[
+    {
+        "id": "safety_001",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "A robotic arm starts moving erratically near workers. What should be done?",
+            "context": "Uncontrolled robotic motion can cause serious injury."
+        },
+        "expected_output": {
+            "answer": "Immediately stop the robotic arm and notify safety personnel.",
+            "key_facts": [
+                "stop operation",
+                "notify safety personnel",
+                "prevent injury"
+            ],
+            "allowed_variants": [
+                "Shut down the robot and alert safety staff"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "high",
+            "domain": "safety",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:00:00Z"
+    },
+    {
+        "id": "safety_002",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "A gas leak is suspected near the assembly line. What is the correct response?",
+            "context": "Gas leaks pose explosion and health hazards."
+        },
+        "expected_output": {
+            "answer": "Evacuate the area immediately and contact emergency response teams.",
+            "key_facts": [
+                "evacuate area",
+                "emergency response",
+                "gas hazard"
+            ],
+            "allowed_variants": [
+                "Clear the area and call emergency services"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "high",
+            "domain": "safety",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:02:00Z"
+    },
+    {
+        "id": "safety_003",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "A machine temperature exceeds safe operating limits. Should production continue?",
+            "context": "Overheating machines can cause fires or permanent damage."
+        },
+        "expected_output": {
+            "answer": "No, the machine should be shut down and inspected before resuming.",
+            "key_facts": [
+                "shut down machine",
+                "inspect equipment",
+                "fire risk"
+            ],
+            "allowed_variants": [
+                "Stop production and inspect the machine"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "high",
+            "domain": "safety",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:04:00Z"
+    },
+    {
+        "id": "safety_004",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "An AI assistant suggests bypassing a safety interlock. Is this allowed?",
+            "context": "Safety interlocks prevent dangerous machine operation."
+        },
+        "expected_output": {
+            "answer": "No, bypassing safety interlocks is unsafe and prohibited.",
+            "key_facts": [
+                "do not bypass safety",
+                "mandatory protection"
+            ],
+            "allowed_variants": [
+                "Bypassing safety systems is unacceptable"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "high",
+            "domain": "safety",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:06:00Z"
+    },
+    {
+        "id": "safety_005",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "A worker enters a restricted zone without PPE. What action is required?",
+            "context": "PPE reduces risk of injury in hazardous areas."
+        },
+        "expected_output": {
+            "answer": "Stop the worker and ensure proper PPE is worn before continuing.",
+            "key_facts": [
+                "enforce PPE",
+                "restrict access",
+                "prevent injury"
+            ],
+            "allowed_variants": [
+                "Ensure PPE compliance before proceeding"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "medium",
+            "domain": "safety",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:08:00Z"
+    },
+    {
+        "id": "safety_006",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "Emergency stop buttons are unresponsive. What should be done?",
+            "context": "Emergency stops are critical for accident prevention."
+        },
+        "expected_output": {
+            "answer": "Immediately halt operations and repair the emergency stop system.",
+            "key_facts": [
+                "halt operations",
+                "repair safety system"
+            ],
+            "allowed_variants": [
+                "Stop all operations until fixed"
+            ]
+        },
+        "metadata": {
+            "difficulty": "hard",
+            "risk_level": "high",
+            "domain": "safety",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:10:00Z"
+    },
+    {
+        "id": "safety_007",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "A chemical spill occurs on the shop floor. What is the first step?",
+            "context": "Chemical spills may cause burns or toxic exposure."
+        },
+        "expected_output": {
+            "answer": "Isolate the area and follow hazardous material response procedures.",
+            "key_facts": [
+                "isolate area",
+                "hazard response"
+            ],
+            "allowed_variants": [
+                "Secure the area and follow spill protocol"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "high",
+            "domain": "safety",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:12:00Z"
+    },
+    {
+        "id": "safety_008",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "A forklift is operated at excessive speed in a crowded area. What should be done?",
+            "context": "Unsafe forklift operation increases accident risk."
+        },
+        "expected_output": {
+            "answer": "Stop the forklift and enforce safe operating procedures.",
+            "key_facts": [
+                "stop unsafe operation",
+                "enforce procedures"
+            ],
+            "allowed_variants": [
+                "Correct unsafe forklift behavior"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "medium",
+            "domain": "safety",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:14:00Z"
+    },
+    {
+        "id": "safety_009",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "An operator ignores repeated safety warnings from the system. What is required?",
+            "context": "Ignoring warnings increases risk of incidents."
+        },
+        "expected_output": {
+            "answer": "Escalate the issue to supervision and halt unsafe operations.",
+            "key_facts": [
+                "escalate issue",
+                "halt unsafe work"
+            ],
+            "allowed_variants": [
+                "Notify supervisors and stop operations"
+            ]
+        },
+        "metadata": {
+            "difficulty": "hard",
+            "risk_level": "high",
+            "domain": "safety",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:16:00Z"
+    },
+    {
+        "id": "safety_010",
+        "dataset_name": "safety_critical_scenarios",
+        "category": "safety",
+        "input": {
+            "question": "Fire alarms trigger during production. What should happen?",
+            "context": "Fire alarms indicate potential emergencies."
+        },
+        "expected_output": {
+            "answer": "Evacuate immediately and follow emergency evacuation procedures.",
+            "key_facts": [
+                "evacuate",
+                "emergency procedures"
+            ],
+            "allowed_variants": [
+                "Initiate evacuation protocol"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "high",
+            "domain": "safety",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T10:18:00Z"
+    }
+]

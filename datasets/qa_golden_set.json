@@ -1,0 +1,284 @@
+[
+    {
+        "id": "qa_001",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "What is the primary role of a PLC in a smart factory?",
+            "context": "Programmable Logic Controllers automate industrial processes by executing control logic based on inputs."
+        },
+        "expected_output": {
+            "answer": "A PLC automates and controls industrial machines by executing programmed logic using sensor inputs.",
+            "key_facts": [
+                "automates machines",
+                "uses sensor inputs",
+                "executes control logic"
+            ],
+            "allowed_variants": [
+                "PLC controls machines using programmed logic",
+                "PLC automates industrial processes"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "low",
+            "domain": "manufacturing",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:00:00Z"
+    },
+    {
+        "id": "qa_002",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "Why are sensors critical in smart manufacturing?",
+            "context": "Sensors collect real-time data such as temperature, pressure, and vibration."
+        },
+        "expected_output": {
+            "answer": "Sensors provide real-time operational data that enables monitoring, automation, and decision-making.",
+            "key_facts": [
+                "real-time data",
+                "monitoring",
+                "decision-making"
+            ],
+            "allowed_variants": [
+                "Sensors enable real-time monitoring",
+                "Sensors supply data for automation"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "low",
+            "domain": "manufacturing",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:02:00Z"
+    },
+    {
+        "id": "qa_003",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "What does predictive maintenance aim to achieve?",
+            "context": "Predictive maintenance analyzes machine data to anticipate failures."
+        },
+        "expected_output": {
+            "answer": "Predictive maintenance aims to prevent equipment failures by predicting issues before they occur.",
+            "key_facts": [
+                "predict failures",
+                "prevent downtime",
+                "use machine data"
+            ],
+            "allowed_variants": [
+                "It predicts failures early",
+                "It prevents unexpected breakdowns"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "low",
+            "domain": "operations",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:04:00Z"
+    },
+    {
+        "id": "qa_004",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "How does an MES differ from an ERP system?",
+            "context": "MES manages shop-floor operations, while ERP focuses on enterprise-level planning."
+        },
+        "expected_output": {
+            "answer": "MES manages real-time manufacturing operations, while ERP handles enterprise planning and business processes.",
+            "key_facts": [
+                "MES shop-floor",
+                "ERP enterprise planning"
+            ],
+            "allowed_variants": [
+                "MES focuses on production, ERP on planning"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "low",
+            "domain": "manufacturing",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:06:00Z"
+    },
+    {
+        "id": "qa_005",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "What information does an LLM trace typically record?",
+            "context": "LLM traces capture inputs, outputs, latency, tokens, and cost."
+        },
+        "expected_output": {
+            "answer": "An LLM trace records inputs, outputs, latency, token usage, and cost for each request.",
+            "key_facts": [
+                "inputs",
+                "outputs",
+                "latency",
+                "tokens",
+                "cost"
+            ],
+            "allowed_variants": [
+                "Trace logs model usage details"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "low",
+            "domain": "llmops",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:08:00Z"
+    },
+    {
+        "id": "qa_006",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "Why is prompt versioning important in LLMOps?",
+            "context": "Prompt changes can impact output quality and evaluation results."
+        },
+        "expected_output": {
+            "answer": "Prompt versioning ensures changes are tracked and results remain reproducible.",
+            "key_facts": [
+                "track changes",
+                "reproducibility"
+            ],
+            "allowed_variants": [
+                "It helps track prompt changes",
+                "It ensures reproducible outputs"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "low",
+            "domain": "llmops",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:10:00Z"
+    },
+    {
+        "id": "qa_007",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "What is hallucination in LLM responses?",
+            "context": "Hallucinations occur when models generate unsupported or incorrect information."
+        },
+        "expected_output": {
+            "answer": "Hallucination is when an LLM produces information that is incorrect or not grounded in the context.",
+            "key_facts": [
+                "incorrect information",
+                "not grounded in context"
+            ],
+            "allowed_variants": [
+                "Fabricated responses",
+                "Ungrounded model output"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "medium",
+            "domain": "llmops",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:12:00Z"
+    },
+    {
+        "id": "qa_008",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "What is the purpose of an annotation queue?",
+            "context": "Annotation queues enable human review of flagged AI outputs."
+        },
+        "expected_output": {
+            "answer": "Annotation queues allow humans to review, label, and correct AI outputs.",
+            "key_facts": [
+                "human review",
+                "label outputs",
+                "quality control"
+            ],
+            "allowed_variants": [
+                "Queue for manual review"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "medium",
+            "domain": "governance",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:14:00Z"
+    },
+    {
+        "id": "qa_009",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "Why is cost monitoring important in LLM-based systems?",
+            "context": "LLM usage incurs variable costs based on tokens and model selection."
+        },
+        "expected_output": {
+            "answer": "Cost monitoring helps control spending and optimize model usage.",
+            "key_facts": [
+                "control spending",
+                "optimize usage"
+            ],
+            "allowed_variants": [
+                "It prevents cost overruns"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "medium",
+            "domain": "llmops",
+            "requires_reasoning": false
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:16:00Z"
+    },
+    {
+        "id": "qa_010",
+        "dataset_name": "qa_golden_set",
+        "category": "qa",
+        "input": {
+            "question": "What does context relevance measure in LLM evaluation?",
+            "context": "Context relevance evaluates how well a response uses provided context."
+        },
+        "expected_output": {
+            "answer": "Context relevance measures how accurately a response uses the given context.",
+            "key_facts": [
+                "uses provided context",
+                "accuracy"
+            ],
+            "allowed_variants": [
+                "Relevance to supplied context"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "low",
+            "domain": "evaluation",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T09:18:00Z"
+    }
+]

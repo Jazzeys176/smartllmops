@@ -1,0 +1,51 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+# Import routers
+from routers.traces import router as traces_router
+from routers.evaluations import router as evaluations_router
+from routers.evaluators import router as evaluators_router
+from routers.templates import router as templates_router
+from routers.sessions import router as sessions_router
+
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Load .env from project root
+env_path = Path(__file__).resolve().parents[1] / ".env"
+load_dotenv(env_path)
+
+app = FastAPI(
+    title="Smart Factory AI Backend",
+    version="1.0.0"
+)
+
+# -------------------------
+# CORS (allow frontend React)
+# -------------------------
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],       # allow frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# -------------------------
+# Register Routers (Correct)
+# -------------------------
+app.include_router(traces_router, prefix="/traces", tags=["Traces"])
+app.include_router(evaluations_router, prefix="/evaluations", tags=["Evaluations"])
+app.include_router(evaluators_router, prefix="/evaluators", tags=["Evaluators"])
+app.include_router(templates_router, prefix="/templates", tags=["Templates"])
+app.include_router(sessions_router, prefix="/sessions", tags=["Sessions"])
+
+from routers.datasets import router as datasets_router
+app.include_router(datasets_router, prefix="/datasets", tags=["Datasets"])
+
+# -------------------------
+# Root endpoint
+# -------------------------
+@app.get("/")
+def root():
+    return {"message": "Smart Factory AI Backend Running!"}

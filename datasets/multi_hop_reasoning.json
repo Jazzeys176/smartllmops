@@ -1,0 +1,280 @@
+[
+    {
+        "id": "mh_001",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "A machine shows rising vibration and reduced output. What is the issue and next step?",
+            "context": "Rising vibration indicates bearing wear. Reduced output suggests inefficiency."
+        },
+        "expected_output": {
+            "answer": "The likely issue is bearing wear, and maintenance should be scheduled.",
+            "key_facts": [
+                "rising vibration",
+                "bearing wear",
+                "schedule maintenance"
+            ],
+            "allowed_variants": [
+                "Bearing failure is likely; plan maintenance"
+            ]
+        },
+        "metadata": {
+            "difficulty": "hard",
+            "risk_level": "medium",
+            "domain": "operations",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:00:00Z"
+    },
+    {
+        "id": "mh_002",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "Energy usage increases while output remains constant. What does this indicate?",
+            "context": "Higher energy use without increased output indicates inefficiency."
+        },
+        "expected_output": {
+            "answer": "The system is becoming inefficient and should be inspected.",
+            "key_facts": [
+                "energy increase",
+                "constant output",
+                "inefficiency"
+            ],
+            "allowed_variants": [
+                "Energy inefficiency is likely"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "low",
+            "domain": "operations",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:02:00Z"
+    },
+    {
+        "id": "mh_003",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "Sensors show intermittent data loss and delayed alerts. What is the probable cause?",
+            "context": "Network latency affects sensor communication."
+        },
+        "expected_output": {
+            "answer": "The most probable cause is network instability.",
+            "key_facts": [
+                "data loss",
+                "delayed alerts",
+                "network issues"
+            ],
+            "allowed_variants": [
+                "Unstable network connectivity"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "medium",
+            "domain": "infrastructure",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:04:00Z"
+    },
+    {
+        "id": "mh_004",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "Frequent false alerts are triggered. What should be reviewed first?",
+            "context": "Incorrect thresholds can generate excessive alerts."
+        },
+        "expected_output": {
+            "answer": "Alert thresholds should be reviewed and adjusted.",
+            "key_facts": [
+                "false alerts",
+                "threshold misconfiguration"
+            ],
+            "allowed_variants": [
+                "Review alert thresholds"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "low",
+            "domain": "monitoring",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:06:00Z"
+    },
+    {
+        "id": "mh_005",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "Production latency increases after a prompt update. What should be checked?",
+            "context": "Prompt changes can impact response time."
+        },
+        "expected_output": {
+            "answer": "Review and compare the new prompt version with the previous one.",
+            "key_facts": [
+                "prompt update",
+                "compare versions",
+                "latency impact"
+            ],
+            "allowed_variants": [
+                "Analyze prompt version history"
+            ]
+        },
+        "metadata": {
+            "difficulty": "hard",
+            "risk_level": "medium",
+            "domain": "llmops",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:08:00Z"
+    },
+    {
+        "id": "mh_006",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "Maintenance tickets spike after a software update. What could explain this?",
+            "context": "Software updates can introduce bugs or misconfigurations."
+        },
+        "expected_output": {
+            "answer": "The update may have introduced bugs or configuration issues.",
+            "key_facts": [
+                "software update",
+                "bugs",
+                "misconfiguration"
+            ],
+            "allowed_variants": [
+                "The update likely caused new issues"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "medium",
+            "domain": "operations",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:10:00Z"
+    },
+    {
+        "id": "mh_007",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "Context relevance scores drop while hallucination increases. What should be reviewed?",
+            "context": "Poor retrieval quality can reduce context grounding."
+        },
+        "expected_output": {
+            "answer": "The retrieval configuration and embedding quality should be reviewed.",
+            "key_facts": [
+                "context relevance drop",
+                "hallucination increase",
+                "retrieval issues"
+            ],
+            "allowed_variants": [
+                "Review retrieval and embeddings"
+            ]
+        },
+        "metadata": {
+            "difficulty": "hard",
+            "risk_level": "medium",
+            "domain": "llmops",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:12:00Z"
+    },
+    {
+        "id": "mh_008",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "User satisfaction drops but accuracy remains high. What is a likely cause?",
+            "context": "Users may value clarity and conciseness beyond correctness."
+        },
+        "expected_output": {
+            "answer": "Responses may be too verbose or unclear despite being correct.",
+            "key_facts": [
+                "low satisfaction",
+                "high accuracy",
+                "poor clarity"
+            ],
+            "allowed_variants": [
+                "Responses lack clarity or conciseness"
+            ]
+        },
+        "metadata": {
+            "difficulty": "medium",
+            "risk_level": "low",
+            "domain": "evaluation",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:14:00Z"
+    },
+    {
+        "id": "mh_009",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "Daily LLM cost spikes while traffic remains constant. What is the likely cause?",
+            "context": "Higher token usage or model changes can increase cost."
+        },
+        "expected_output": {
+            "answer": "Token usage per request likely increased or a more expensive model is being used.",
+            "key_facts": [
+                "cost spike",
+                "token usage increase",
+                "model change"
+            ],
+            "allowed_variants": [
+                "Increased tokens or model cost"
+            ]
+        },
+        "metadata": {
+            "difficulty": "hard",
+            "risk_level": "medium",
+            "domain": "llmops",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:16:00Z"
+    },
+    {
+        "id": "mh_010",
+        "dataset_name": "multi_hop_reasoning",
+        "category": "multi_hop",
+        "input": {
+            "question": "Alert volume increases but no real incidents occur. What should be tuned?",
+            "context": "Overly sensitive thresholds cause alert fatigue."
+        },
+        "expected_output": {
+            "answer": "Alert thresholds and sensitivity should be tuned.",
+            "key_facts": [
+                "alert fatigue",
+                "threshold tuning"
+            ],
+            "allowed_variants": [
+                "Reduce alert sensitivity"
+            ]
+        },
+        "metadata": {
+            "difficulty": "easy",
+            "risk_level": "low",
+            "domain": "monitoring",
+            "requires_reasoning": true
+        },
+        "verification_status": "verified",
+        "created_at": "2026-01-01T11:18:00Z"
+    }
+]
