@@ -15,6 +15,18 @@ from app.routers.audit import router as audit_router
 # --------------------------------------------------
 # App initialization
 # --------------------------------------------------
+from routers.prompts import router as prompts_router
+
+from dotenv import load_dotenv
+from pathlib import Path
+
+
+app = FastAPI()
+
+# Load .env from project root
+env_path = Path(__file__).resolve().parents[1] / ".env"
+load_dotenv(env_path)
+
 app = FastAPI(
     title="Smart Factory AI Backend",
     version="1.0.0",
@@ -40,7 +52,8 @@ app.include_router(evaluators_router, prefix="/evaluators", tags=["Evaluators"])
 app.include_router(templates_router, prefix="/templates", tags=["Templates"])
 app.include_router(sessions_router, prefix="/sessions", tags=["Sessions"])
 app.include_router(metrics_router, prefix="/dashboard", tags=["Dashboard"])
-app.include_router(audit_router)  # prefix already defined in router
+app.include_router(prompts_router, tags=["Prompts"])
+app.include_router(audit_router)  # prefix already set in router
 
 # --------------------------------------------------
 # Root endpoint
