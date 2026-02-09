@@ -38,7 +38,7 @@ const EvaluatorsPage: React.FC = () => {
   const [showEvaluatorDropdown, setShowEvaluatorDropdown] = useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
 
-  // ✅ Sync tab if navigation state changes (back/forward, redirects)
+  // ✅ Sync tab if navigation state changes
   useEffect(() => {
     const tab = (location.state as any)?.tab;
     if (tab) setActiveTab(tab);
@@ -66,13 +66,25 @@ const EvaluatorsPage: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
 
+    // --------------------------------------------------
+    // ✅ FIXED: Evaluators API shape
+    // --------------------------------------------------
     try {
       const res = await api.get("/evaluators");
-      setEvaluators(Array.isArray(res.data) ? res.data : []);
+      const data = res.data;
+
+      if (Array.isArray(data)) {
+        setEvaluators(data);
+      } else if (Array.isArray(data?.evaluators)) {
+        setEvaluators(data.evaluators);
+      } else {
+        setEvaluators([]);
+      }
     } catch {
       setEvaluators([]);
     }
 
+    // Templates
     try {
       const res = await api.get("/templates");
       const t = res.data;
@@ -83,6 +95,7 @@ const EvaluatorsPage: React.FC = () => {
       setTemplates([]);
     }
 
+    // Evaluation logs
     try {
       const res = await api.get("/evaluations");
       setLogs(Array.isArray(res.data) ? res.data : []);

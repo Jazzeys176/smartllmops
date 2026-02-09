@@ -49,8 +49,8 @@ export default function Sidebar() {
               to={item.path}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-[#4db6ac] text-black shadow-lg"
-                  : "hover:bg-[#1e2330] hover:text-white"
+                  ? "bg-[#4db6ac] text-black shadow-lg hover:bg-[#4db6ac] hover:text-black font-semibold"
+                  : "text-white hover:bg-[#1e2330] hover:text-white"
               }`}
             >
               <span className="text-lg">{item.icon}</span>

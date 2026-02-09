@@ -11,12 +11,19 @@ export default function CreateTemplate() {
   const [outputType, setOutputType] = useState("numeric");
   const [prompt, setPrompt] = useState("");
 
+  // ⭐ NEW STATES
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
   // =============================
   // CREATE TEMPLATE API CALL
   // =============================
   const handleCreate = async () => {
+    setSuccessMsg("");
+    setErrorMsg("");
+
     if (!templateName.trim() || !prompt.trim()) {
-      alert("Template name and prompt cannot be empty");
+      setErrorMsg("Template name and prompt cannot be empty.");
       return;
     }
 
@@ -29,7 +36,7 @@ export default function CreateTemplate() {
       version: "1",
       description,
       model,
-      inputs: [], // optional: auto-detect vars later
+      inputs: [],
       template: prompt,
       updated_at: new Date().toISOString(),
     };
@@ -41,19 +48,39 @@ export default function CreateTemplate() {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error("Failed to create template");
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Failed to create template");
+      }
 
-      // ✅ Go back to Evaluators → Templates tab
-      navigate("/evaluators", { state: { tab: "templates" } });
+      // ⭐ SUCCESS
+      setSuccessMsg("Template created successfully!");
 
-    } catch (err) {
+      // Redirect after 1.5 sec
+      setTimeout(() => {
+        navigate("/evaluators", { state: { tab: "templates" } });
+      }, 1500);
+
+    } catch (err: any) {
       console.error(err);
-      alert("Error creating template");
+      setErrorMsg(err.message || "Error creating template.");
     }
   };
 
   return (
     <div className="w-full px-10 py-6 text-white space-y-10 min-h-screen bg-[#0e1117]">
+
+      {/* ⭐ ALERTS */}
+      {successMsg && (
+        <div className="mb-4 p-3 rounded-lg bg-green-600 text-black font-semibold">
+          ✅ {successMsg}
+        </div>
+      )}
+      {errorMsg && (
+        <div className="mb-4 p-3 rounded-lg bg-red-600 text-white font-semibold">
+          ❌ {errorMsg}
+        </div>
+      )}
 
       {/* BACK BUTTON + TITLE */}
       <div className="flex items-center gap-4">
@@ -202,6 +229,7 @@ Evaluate the response and provide a score from 0 to 1.`}
           Create Template
         </button>
       </div>
+
     </div>
   );
 }

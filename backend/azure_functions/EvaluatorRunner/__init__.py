@@ -8,12 +8,12 @@ from azure.functions import DocumentList
 from azure.cosmos import CosmosClient, exceptions
 
 from evaluators.registry import EVALUATORS
+from utils.audit import audit_log   # 👈 ADD THIS
 
 
 # --------------------------------------------------
 # Validate environment variables
 # --------------------------------------------------
-
 COSMOS_CONN_READ = os.getenv("COSMOS_CONN_READ")
 COSMOS_CONN_WRITE = os.getenv("COSMOS_CONN_WRITE")
 
@@ -27,7 +27,6 @@ if not COSMOS_CONN_WRITE:
 # --------------------------------------------------
 # Cosmos Clients
 # --------------------------------------------------
-
 COSMOS_READ = CosmosClient.from_connection_string(COSMOS_CONN_READ)
 COSMOS_WRITE = CosmosClient.from_connection_string(COSMOS_CONN_WRITE)
 
@@ -41,7 +40,6 @@ EVALS_CONTAINER = DB_WRITE.get_container_client("evaluations")
 # --------------------------------------------------
 # Azure Function Entry
 # --------------------------------------------------
-
 def main(documents: DocumentList):
     logging.error("🔥 EvaluatorRunner TRIGGERED 🔥")
 
@@ -49,7 +47,8 @@ def main(documents: DocumentList):
         logging.warning("[EvaluatorRunner] No documents received")
         return
 
-    logging.info(f"[EvaluatorRunner] Processing {len(documents)} traces")
+    trace_count = len(documents)
+    logging.info(f"[EvaluatorRunner] Processing {trace_count} traces")
 
     # --------------------------------------------------
     # Load enabled evaluators
@@ -57,12 +56,12 @@ def main(documents: DocumentList):
     try:
         evaluators = list(
             EVALUATORS_CONTAINER.query_items(
-                query="SELECT * FROM c WHERE c.status = 'enabled'",
+                query="SELECT * FROM c WHERE c.status = 'active'",
                 enable_cross_partition_query=True,
             )
         )
     except Exception:
-        logging.exception("Failed to load evaluators")
+        logging.exception("[EvaluatorRunner] Failed to load evaluators")
         return
 
     if not evaluators:
@@ -70,98 +69,89 @@ def main(documents: DocumentList):
         return
 
     # --------------------------------------------------
-    # Process each trace
+    # Process evaluators
     # --------------------------------------------------
-    for trace in documents:
-        trace_id = trace.get("trace_id") or trace.get("id")
+    for ev in evaluators:
+        evaluator_name = ev.get("score_name")
+        execution_cfg = ev.get("execution", {})
 
-        if not trace_id:
-            logging.warning("Trace missing trace_id and id — skipping")
+        if not evaluator_name:
             continue
 
-        for ev in evaluators:
-            evaluator_name = ev.get("score_name")
-            execution_cfg = ev.get("execution", {})
+        logging.info(f"[EvaluatorRunner] Starting evaluator '{evaluator_name}'")
 
-            if not evaluator_name:
+        evaluated = 0
+
+        for trace in documents:
+            trace_id = trace.get("trace_id") or trace.get("id")
+            if not trace_id:
                 continue
 
-            # --------------------------------------------------
-            # 1️⃣ SAMPLING RATE
-            # --------------------------------------------------
-            sampling_rate = execution_cfg.get("sampling_rate", 1.0)  # default: 100%
-            if sampling_rate < 0 or sampling_rate > 1:
-                sampling_rate = 1.0  # safety fallback
+            # -----------------------------
+            # Sampling
+            # -----------------------------
+            sampling_rate = execution_cfg.get("sampling_rate", 1.0)
+            if not (0 <= sampling_rate <= 1):
+                sampling_rate = 1.0
 
             if random.random() > sampling_rate:
-                logging.info(
-                    f"[EvaluatorRunner] Skipped {evaluator_name} due to sampling ({sampling_rate})"
-                )
                 continue
 
-            # --------------------------------------------------
-            # 2️⃣ OPTIONAL DELAY BEFORE RUNNING EVALUATOR
-            # --------------------------------------------------
+            # -----------------------------
+            # Optional delay
+            # -----------------------------
             delay_ms = execution_cfg.get("delay_ms", 0)
             if delay_ms > 0:
-                logging.info(
-                    f"[EvaluatorRunner] Delay {delay_ms}ms for evaluator {evaluator_name}"
-                )
                 time.sleep(delay_ms / 1000)
 
-            # --------------------------------------------------
-            # Get evaluator template function
-            # --------------------------------------------------
+            # -----------------------------
+            # Evaluator function
+            # -----------------------------
             template_id = ev.get("template", {}).get("id")
             evaluator_fn = EVALUATORS.get(template_id)
 
             if not evaluator_fn:
                 logging.warning(
-                    f"No evaluator function registered for template {template_id}"
+                    f"[EvaluatorRunner] No evaluator registered for template {template_id}"
                 )
                 continue
 
             eval_id = f"{trace_id}:{evaluator_name}"
 
-            # --------------------------------------------------
-            # 3️⃣ Idempotency check
-            # --------------------------------------------------
+            # -----------------------------
+            # Idempotency
+            # -----------------------------
             try:
                 EVALS_CONTAINER.read_item(item=eval_id, partition_key=trace_id)
-                logging.info(f"[EvaluatorRunner] Skipping existing eval {eval_id}")
                 continue
             except exceptions.CosmosResourceNotFoundError:
                 pass
             except Exception:
-                logging.exception("Failed during idempotency check")
+                logging.exception("[EvaluatorRunner] Idempotency check failed")
                 continue
 
-            # --------------------------------------------------
-            # 4️⃣ Run evaluator with duration measurement
-            # --------------------------------------------------
+            # -----------------------------
+            # Run evaluator
+            # -----------------------------
             start_time = time.time()
-
             try:
                 result = evaluator_fn(trace)
                 status = "completed"
             except Exception as e:
                 logging.exception(
-                    f"Evaluator {evaluator_name} failed for trace {trace_id}"
+                    f"[EvaluatorRunner] Evaluator {evaluator_name} failed for trace {trace_id}"
                 )
-                result = {
-                    "score": None,
-                    "explanation": str(e),
-                }
+                result = {"score": None, "explanation": str(e)}
                 status = "failed"
 
             duration_ms = int((time.time() - start_time) * 1000)
 
-            # --------------------------------------------------
-            # 5️⃣ Persist evaluation
-            # --------------------------------------------------
+            # -----------------------------
+            # Persist evaluation
+            # -----------------------------
             doc = {
                 "id": eval_id,
-                "trace_id": trace_id,  # partition key
+                "trace_id": trace_id,
                 "evaluator_name": evaluator_name,
                 "score": result.get("score"),
                 "explanation": result.get("explanation", ""),
@@ -172,9 +162,24 @@ def main(documents: DocumentList):
 
             try:
                 EVALS_CONTAINER.upsert_item(doc)
-                logging.info(
-                    f"[EvaluatorRunner] Stored {evaluator_name} for trace {trace_id} "
-                    f"(duration={duration_ms}ms)"
-                )
+                evaluated += 1
             except Exception:
-                logging.exception("Failed to persist evaluation")
+                logging.exception("[EvaluatorRunner] Failed to persist evaluation")
+
+        # --------------------------------------------------
+        # ✅ AUDIT: Evaluator Run Completed (ONCE)
+        # --------------------------------------------------
+        audit_log(
+            action="Evaluator Run Completed",
+            type="evaluator",
+            user="system",
+            details=(
+                f"Ran evaluator '{evaluator_name}' "
+                f"on {evaluated} traces (out of {trace_count})"
+            ),
+        )
+
+        logging.info(
+            f"[EvaluatorRunner] Completed evaluator '{evaluator_name}' "
+            f"({evaluated}/{trace_count} traces)"
+        )

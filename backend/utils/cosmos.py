@@ -8,7 +8,6 @@ from azure.cosmos import CosmosClient
 ROOT_ENV_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../..", ".env")
 )
-
 print("Loading .env from:", ROOT_ENV_PATH)
 load_dotenv(ROOT_ENV_PATH)
 
@@ -25,7 +24,6 @@ if not COSMOS_CONN_READ:
 if not COSMOS_CONN_WRITE:
     raise RuntimeError("❌ COSMOS_CONN_WRITE missing in .env")
 
-# Clean connection strings (important)
 COSMOS_CONN_READ = COSMOS_CONN_READ.strip().strip('"').strip("'")
 COSMOS_CONN_WRITE = COSMOS_CONN_WRITE.strip().strip('"').strip("'")
 
@@ -44,16 +42,17 @@ database_write = cosmos_client_write.get_database_client(COSMOS_DB)
 # --------------------------------------------------
 # Container Clients
 # --------------------------------------------------
-# 🔹 READ-ONLY containers (GET endpoints)
+
+# READ containers
 traces_container = database_read.get_container_client("traces")
 evaluations_container = database_read.get_container_client("evaluations")
-evaluators_container = database_read.get_container_client("evaluators")
 metrics_container = database_read.get_container_client("metrics")
 
-# 🔹 WRITE-ENABLED containers (POST / PUT / DELETE)
-templates_container = database_write.get_container_client("templates")
+templates_container_read = database_read.get_container_client("templates")
+evaluators_container_read = database_read.get_container_client("evaluators")
+audit_container_read = database_read.get_container_client("audit_logs")
 
-print("✅ Cosmos DB initialized")
-print("   Database:", COSMOS_DB)
-print("   READ client: enabled")
-print("   WRITE client: enabled")
+# WRITE containers
+templates_container = database_write.get_container_client("templates")
+evaluators_container = database_write.get_container_client("evaluators")
+audit_container = database_write.get_container_client("audit_logs")  # ✅ FIX

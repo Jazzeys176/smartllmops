@@ -53,10 +53,16 @@ const CreateEvaluator: React.FC = () => {
     );
   }, [selectedTemplate]);
 
-  /** CREATE EVALUATOR */
+  /** CREATE EVALUATOR ACTION */
   const handleCreate = async () => {
     if (!selectedTemplate) return alert("Select a template first.");
     if (!name.trim()) return alert("Enter evaluator name.");
+
+    // Validate that variable mapping has no empty selections
+    const emptyMapping = variableMapping.some((m) => !m.source);
+    if (emptyMapping) {
+      return alert("Please complete all variable mappings.");
+    }
 
     const payload = {
       score_name: name.trim(),
@@ -76,10 +82,12 @@ const CreateEvaluator: React.FC = () => {
       },
     };
 
+    console.log("Sending evaluator payload:", payload);
+
     await api.post("/evaluators", payload);
 
     alert("Evaluator created!");
-    navigate("/evaluators");
+    navigate("/evaluators"); // Redirect to Evaluators list
   };
 
   if (loading) {
@@ -88,10 +96,7 @@ const CreateEvaluator: React.FC = () => {
 
   return (
     <div className="flex justify-center bg-[#0e1117] text-white min-h-screen p-10">
-
-      {/* MAIN CONTAINER — 60% WIDTH */}
       <div className="w-full max-w-[60vw] space-y-10">
-
         {/* BACK BUTTON + TITLE */}
         <div className="flex items-center gap-4">
           <button
@@ -116,7 +121,7 @@ const CreateEvaluator: React.FC = () => {
           </div>
         </div>
 
-        {/* ===================== BASIC INFORMATION ===================== */}
+        {/* BASIC INFORMATION */}
         <section className="bg-[#161a23] border border-gray-800 rounded-2xl p-6">
           <h2 className="text-xl font-bold mb-6">Basic Information</h2>
 
@@ -124,9 +129,7 @@ const CreateEvaluator: React.FC = () => {
 
             {/* Evaluator Name */}
             <div className="flex flex-col">
-              <label className="text-sm text-gray-400 mb-2">
-                Evaluator Name
-              </label>
+              <label className="text-sm text-gray-400 mb-2">Evaluator Name</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -187,10 +190,9 @@ const CreateEvaluator: React.FC = () => {
           </div>
         </section>
 
-        {/* ===================== TARGET SECTION ===================== */}
+        {/* TARGET SECTION */}
         <section className="bg-[#161a23] border border-gray-800 rounded-2xl p-6">
           <h2 className="text-xl font-bold mb-6">Target Configuration</h2>
-
           <div className="flex gap-3">
             <button
               onClick={() => setTargetType("traces")}
@@ -216,7 +218,7 @@ const CreateEvaluator: React.FC = () => {
           </div>
         </section>
 
-        {/* ===================== VARIABLE MAPPING ===================== */}
+        {/* VARIABLE MAPPING */}
         <section className="bg-[#161a23] border border-gray-800 rounded-2xl p-6">
           <h2 className="text-xl font-bold mb-6">Variable Mapping</h2>
 
@@ -248,7 +250,7 @@ const CreateEvaluator: React.FC = () => {
           ))}
         </section>
 
-        {/* ===================== EXECUTION SETTINGS ===================== */}
+        {/* EXECUTION SETTINGS */}
         <section className="bg-[#161a23] border border-gray-800 rounded-2xl p-6">
           <h2 className="text-xl font-bold mb-6">Execution Settings</h2>
 
@@ -289,7 +291,7 @@ const CreateEvaluator: React.FC = () => {
           </div>
         </section>
 
-        {/* ===================== BUTTONS ===================== */}
+        {/* BUTTONS */}
         <div className="flex justify-end gap-4 pb-10">
           <button
             onClick={() => navigate("/evaluators")}

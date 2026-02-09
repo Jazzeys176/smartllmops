@@ -2,11 +2,9 @@ import math
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Query
 
-# 🚀 Import the shared container
 from utils.cosmos import traces_container
 
 router = APIRouter()
-
 
 # -----------------------------
 # Helpers
@@ -40,26 +38,15 @@ def normalize_trace(t: dict) -> dict:
         "session_id": t.get("session_id"),
         "user_id": t.get("user_id"),
         "trace_name": t.get("trace_name"),
-
         "input": t.get("input"),
         "output": t.get("output"),
-
         "timestamp": parse_timestamp(
-            t.get("timestamp")
-            or t.get("created_at")
-            or t.get("_ts")
+            t.get("timestamp") or t.get("created_at") or t.get("_ts")
         ),
-
-        "latency_ms": (
-            t.get("latency_ms")
-            or t.get("latency")
-            or 0
-        ),
-
+        "latency_ms": t.get("latency_ms") or t.get("latency") or 0,
         "tokens": t.get("tokens"),
         "tokens_in": t.get("tokens_in"),
         "tokens_out": t.get("tokens_out"),
-
         "cost": t.get("cost"),
         "model": t.get("model"),
     }
@@ -95,9 +82,9 @@ def get_all_traces(
         if filters:
             query += " WHERE " + " AND ".join(filters)
 
-        query += " ORDER BY c.timestamp DESC"
+        # ✅ SAFE ORDER BY
+        query += " ORDER BY c._ts DESC"
 
-        # 🚀 SAFE COSMOS QUERY (NO PAGINATION TOKENS)
         raw = list(
             traces_container.query_items(
                 query=query,

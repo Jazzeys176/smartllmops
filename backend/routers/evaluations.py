@@ -2,7 +2,6 @@ import math
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Query
 
-# 🚀 Import the shared containers
 from utils.cosmos import evaluations_container
 
 router = APIRouter()
@@ -23,7 +22,6 @@ def scrub(obj):
 # -----------------------------
 # NORMALIZATION
 # -----------------------------
-
 ALLOWED_STATUS = {"Completed", "Error", "Timeout"}
 
 
@@ -38,26 +36,16 @@ def parse_timestamp(ts):
 
 
 def compute_duration(e: dict):
-    if isinstance(e.get("duration_ms"), (int, float)):
-        return int(e["duration_ms"])
+    for key in ("duration_ms", "duration", "latency_ms", "eval_latency"):
+        if isinstance(e.get(key), (int, float)):
+            return int(e[key])
 
-    if isinstance(e.get("duration"), (int, float)):
-        return int(e["duration"])
-
-    if isinstance(e.get("latency_ms"), (int, float)):
-        return int(e["latency_ms"])
-
-    if isinstance(e.get("eval_latency"), (int, float)):
-        return int(e["eval_latency"])
-
-    start = e.get("start_time")
-    end = e.get("end_time")
     try:
-        if start and end:
-            start_dt = datetime.fromisoformat(start)
-            end_dt = datetime.fromisoformat(end)
-            return int((end_dt - start_dt).total_seconds() * 1000)
-    except:
+        if e.get("start_time") and e.get("end_time"):
+            start = datetime.fromisoformat(e["start_time"])
+            end = datetime.fromisoformat(e["end_time"])
+            return int((end - start).total_seconds() * 1000)
+    except Exception:
         pass
 
     return 0
@@ -68,36 +56,27 @@ def normalize_status(e: dict, score):
     if raw in ALLOWED_STATUS:
         return raw
 
-    if raw:
+    if isinstance(raw, str):
         rl = raw.lower()
         if "timeout" in rl:
             return "Timeout"
         if "error" in rl or "fail" in rl:
             return "Error"
 
-    if score is not None:
-        return "Completed"
-
-    return "Error"
+    return "Completed" if score is not None else "Error"
 
 
 def normalize_eval(e: dict) -> dict:
     score = e.get("score")
-    duration_ms = compute_duration(e)
 
     return {
         "evaluator_name": e.get("evaluator_name"),
         "trace_id": e.get("trace_id"),
-
         "score": score,
-
         "timestamp": parse_timestamp(
-            e.get("timestamp")
-            or e.get("created_at")
-            or e.get("_ts")
+            e.get("timestamp") or e.get("created_at") or e.get("_ts")
         ),
-
-        "duration_ms": duration_ms,
+        "duration_ms": compute_duration(e),
         "status": normalize_status(e, score),
     }
 
@@ -112,11 +91,10 @@ def get_all_evaluations(
     limit: int = Query(200, ge=1, le=1000),
 ):
     try:
-        # Base query
         query = "SELECT * FROM c"
         parameters = []
-
         filters = []
+
         if evaluator:
             filters.append("c.evaluator_name = @evaluator")
             parameters.append({"name": "@evaluator", "value": evaluator})
@@ -128,9 +106,9 @@ def get_all_evaluations(
         if filters:
             query += " WHERE " + " AND ".join(filters)
 
-        query += " ORDER BY c.timestamp DESC"
+        # ✅ SAFE ORDER BY (always exists)
+        query += " ORDER BY c._ts DESC"
 
-        # 🚀 Run query (using shared container)
         raw = list(
             evaluations_container.query_items(
                 query=query,

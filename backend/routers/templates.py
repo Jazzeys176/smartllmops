@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException
 from azure.cosmos.exceptions import CosmosResourceExistsError
 
 from utils.cosmos import templates_container
+from azure_functions.utils.audit import audit_log   # 👈 ADD THIS
 
 router = APIRouter()
 
@@ -116,7 +117,16 @@ def create_template(payload: dict):
             "updated_at": datetime.utcnow().isoformat(),
         }
 
+        # ✅ CREATE TEMPLATE
         templates_container.create_item(doc)
+
+        # ✅ AUDIT LOG (AFTER SUCCESS)
+        audit_log(
+            action="Template Created",
+            type="template",
+            user="system",  # replace later with real user
+            details=f"Created template '{name}' (v{doc['version']})"
+        )
 
         return {"status": "ok", "template": scrub(doc)}
 
