@@ -1,5 +1,6 @@
 import os
 import logging
+import random
 import time
 from datetime import datetime, timezone
 
@@ -7,7 +8,7 @@ from azure.functions import DocumentList
 from azure.cosmos import CosmosClient, exceptions
 
 from evaluators.registry import EVALUATORS
-from utils.audit import audit_log
+from utils.audit import audit_log   # 👈 ADD THIS
 
 
 # --------------------------------------------------
@@ -87,17 +88,13 @@ def main(documents: DocumentList):
                 continue
 
             # -----------------------------
-            # Deterministic Sampling
+            # Sampling
             # -----------------------------
             sampling_rate = execution_cfg.get("sampling_rate", 1.0)
-            if not isinstance(sampling_rate, (int, float)):
+            if not (0 <= sampling_rate <= 1):
                 sampling_rate = 1.0
 
-            sampling_rate = max(0.0, min(1.0, sampling_rate))
-
-            # stable hash → reproducible sampling
-            hash_val = hash(f"{trace_id}:{evaluator_name}") % 1000
-            if (hash_val / 1000.0) > sampling_rate:
+            if random.random() > sampling_rate:
                 continue
 
             # -----------------------------
@@ -125,10 +122,7 @@ def main(documents: DocumentList):
             # Idempotency
             # -----------------------------
             try:
-                EVALS_CONTAINER.read_item(
-                    item=eval_id,
-                    partition_key=trace_id
-                )
+                EVALS_CONTAINER.read_item(item=eval_id, partition_key=trace_id)
                 continue
             except exceptions.CosmosResourceNotFoundError:
                 pass

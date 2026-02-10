@@ -43,8 +43,7 @@ def call_azure_llm(prompt: str) -> str:
                 "role": "system",
                 "content": (
                     "You are a conciseness evaluator. "
-                    "Judge if the answer is verbose, padded, repetitive, "
-                    "or unnecessarily long. "
+                    "Judge verbosity with fine-grained numeric precision. "
                     "Return ONLY valid JSON."
                 ),
             },
@@ -57,12 +56,11 @@ def call_azure_llm(prompt: str) -> str:
         url,
         headers=headers,
         json=payload,
-        timeout=30,  # ✅ prevent hanging evaluators
+        timeout=30,
     )
     response.raise_for_status()
 
     data = response.json()
-
     choices = data.get("choices", [])
     if not choices:
         raise ValueError("No choices returned from Azure OpenAI")
@@ -70,7 +68,7 @@ def call_azure_llm(prompt: str) -> str:
     return choices[0]["message"]["content"]
 
 # =====================================================
-# Prompt Builder
+# Prompt Builder (CONTINUOUS SCORING)
 # =====================================================
 
 MAX_CONTEXT_CHARS = 3000
@@ -82,10 +80,18 @@ def build_prompt(question: str, context: str, answer: str) -> str:
     answer = (answer or "")[:MAX_ANSWER_CHARS]
 
     return f"""
-Evaluate the conciseness of the AI answer.
+Evaluate the CONCISENESS of the AI answer.
 
 Definition:
-Conciseness = how short, clear, and to-the-point the answer is.
+Conciseness measures how short, clear, and to-the-point the answer is.
+
+Scoring instructions (IMPORTANT):
+- Return a FLOAT between 0.0 and 1.0
+- Use fine-grained values (e.g., 0.21, 0.48, 0.73, 0.92)
+- Avoid round numbers unless the case is extremely clear
+- Higher score = more concise
+- 0.0 = extremely verbose / padded
+- 1.0 = extremely concise
 
 Question:
 {question}
@@ -98,14 +104,9 @@ Answer:
 
 Return ONLY valid JSON:
 {{
-  "score": <float between 0 and 1>,
+  "score": <float>,
   "explanation": "<short reason>"
 }}
-
-Scoring Guide:
-0.0 = extremely concise
-0.5 = reasonably concise
-1.0 = very verbose / padded
 """.strip()
 
 # =====================================================
@@ -137,11 +138,8 @@ def conciseness_llm(trace: dict) -> dict:
 
         result = json.loads(cleaned)
 
-        # -------------------------------------------------
-        # IMPORTANT: invert score so higher = better
-        # -------------------------------------------------
-        raw_score = float(result["score"])
-        final_score = round(1.0 - raw_score, 4)
+        # Score already follows higher = better
+        final_score = round(float(result["score"]), 4)
 
         return {
             "score": final_score,

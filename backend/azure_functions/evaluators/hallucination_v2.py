@@ -46,6 +46,7 @@ def call_azure_llm(prompt: str) -> str:
                 "content": (
                     "You are a strict hallucination evaluator. "
                     "Hallucination means information NOT supported by the provided context. "
+                    "You must produce a fine-grained numeric judgment. "
                     "Return ONLY valid JSON."
                 )
             },
@@ -70,7 +71,7 @@ def call_azure_llm(prompt: str) -> str:
     return choices[0]["message"]["content"]
 
 # =====================================================
-# Prompt Template
+# Prompt Template (CONTINUOUS SCORING)
 # =====================================================
 
 MAX_CONTEXT_CHARS = 4000
@@ -87,10 +88,13 @@ Evaluate the hallucination of the following answer.
 Definition:
 Hallucination = information NOT supported by the context.
 
-Scoring:
-0.0 = no hallucination
-0.5 = partially hallucinated
-1.0 = heavily hallucinated
+Scoring instructions (IMPORTANT):
+- Return a FLOAT between 0.0 and 1.0
+- Use fine-grained values (e.g., 0.12, 0.47, 0.83)
+- Avoid round numbers unless the case is extremely clear
+- 0.0 = no hallucination
+- 1.0 = completely hallucinated
+- Higher score = more hallucination
 
 Question:
 {question}
@@ -103,7 +107,7 @@ Answer:
 
 Return ONLY valid JSON:
 {{
-  "score": <float between 0 and 1>,
+  "score": <float>,
   "explanation": "<short explanation>"
 }}
 """.strip()
@@ -137,7 +141,7 @@ def hallucination_llm(trace: dict) -> dict:
 
         raw_score = float(result["score"])
 
-        # IMPORTANT: invert so higher = better (consistent platform-wide)
+        # Invert so higher = better (less hallucination)
         final_score = round(1.0 - raw_score, 4)
 
         return {

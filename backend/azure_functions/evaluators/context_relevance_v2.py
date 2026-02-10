@@ -42,7 +42,7 @@ def call_azure_llm(prompt: str) -> str:
                 "role": "system",
                 "content": (
                     "You are a strict RAG evaluator. "
-                    "Evaluate how relevant the retrieved context is to the question. "
+                    "Judge relevance with fine-grained numeric precision. "
                     "Return ONLY valid JSON."
                 )
             },
@@ -67,7 +67,7 @@ def call_azure_llm(prompt: str) -> str:
     return choices[0]["message"]["content"]
 
 # =====================================================
-# Prompt Template
+# Prompt Template (CONTINUOUS SCORING)
 # =====================================================
 
 MAX_CONTEXT_CHARS = 4000
@@ -77,15 +77,18 @@ def build_prompt(question: str, context: str) -> str:
     context = (context or "")[:MAX_CONTEXT_CHARS]
 
     return f"""
-Evaluate the Context Relevance of the retrieved RAG context.
+Evaluate the CONTEXT RELEVANCE of the retrieved RAG context.
 
 Definition:
-Context Relevance = how well the retrieved context helps answer the question.
+Context relevance measures how well the retrieved context helps answer the question.
 
-Scoring:
-0.0 = completely irrelevant
-0.5 = partially relevant
-1.0 = fully relevant and sufficient
+Scoring instructions (IMPORTANT):
+- Return a FLOAT between 0.0 and 1.0
+- Use fine-grained values (e.g., 0.18, 0.42, 0.76, 0.93)
+- Avoid round numbers unless the relevance is extremely clear
+- Higher score = more relevant
+- 0.0 = completely irrelevant
+- 1.0 = fully relevant and sufficient
 
 Question:
 {question}
@@ -95,7 +98,7 @@ Retrieved Context:
 
 Return ONLY valid JSON:
 {{
-  "score": <float between 0 and 1>,
+  "score": <float>,
   "explanation": "<short explanation>"
 }}
 """.strip()
