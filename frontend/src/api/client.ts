@@ -1,6 +1,16 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8000";
+// =======================================================
+// API BASE URL
+// =======================================================
+// Priority:
+// 1️⃣ Environment variable (Vite build-time variable)
+// 2️⃣ Hardcoded Azure App Service backend URL (fallback)
+// =======================================================
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE ||
+  "https://smart-factory-backend-huc4avf8a8djc0fw.eastus2-01.azurewebsites.net";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,24 +19,28 @@ export const api = axios.create({
   },
 });
 
+// =======================================================
+// Interfaces (Types used across frontend)
+// =======================================================
+
 export interface Trace {
   trace_id: string;
   session_id: string;
   timestamp: string;
-  question: string;         // Backend returns this
-  input?: string;          // Optional alias
-  latency_ms: number;      // Backend returns this
-  latency?: number;        // Optional alias
+  question: string;
+  input?: string;
+  latency_ms: number;
+  latency?: number;
   tokens: number;
   cost: number;
-  scores?: Record<string, number>; // Backend returns this
-  [key: string]: any;      // Allow loose indexing for other fields like context, answer
+  scores?: Record<string, number>;
+  [key: string]: any;
 }
 
 export interface Session {
   session_id: string;
-  user: string; // Backend sends "user"
-  user_id?: string; // Frontend alias if needed
+  user: string;
+  user_id?: string;
   trace_count: number;
   total_tokens: number;
   total_cost: number;
@@ -36,8 +50,8 @@ export interface Session {
 export interface Evaluator {
   evaluator_id: string;
   name: string;
-  active: boolean; // active
-  template_id: string; // template
+  active: boolean;
+  template_id: string;
   score_name: string;
   target: string;
   sampling: number;
@@ -46,16 +60,16 @@ export interface Evaluator {
 
 export interface Template {
   template_id: string;
-  name: string; // Changed from template_name
-  template_name?: string; // Optional legacy field
+  name: string;
+  template_name?: string;
   description: string;
-  template: string; // This key is "template" in JSON
+  template: string;
   model: string;
-  inputs: string[]; // Changed from input_variables
-  input_variables?: string[]; // Optional legacy field
+  inputs: string[];
+  input_variables?: string[];
   version: string;
-  updated_at: string; // Changed from last_updated
-  last_updated?: string; // Optional legacy field
+  updated_at: string;
+  last_updated?: string;
 }
 
 export interface EvaluationLog {
