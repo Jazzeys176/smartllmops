@@ -15,6 +15,18 @@ from app.routers.audit import router as audit_router
 # --------------------------------------------------
 # App initialization
 # --------------------------------------------------
+from routers.prompts import router as prompts_router
+
+from dotenv import load_dotenv
+from pathlib import Path
+
+
+app = FastAPI()
+
+# Load .env from project root
+env_path = Path(__file__).resolve().parents[1] / ".env"
+load_dotenv(env_path)
+
 app = FastAPI(
     title="Smart Factory AI Backend",
     version="1.0.0",
