@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # --------------------------------------------------
-# Import routers (ABSOLUTE imports for App Service)
+# Correct absolute imports
 # --------------------------------------------------
 from app.routers.traces import router as traces_router
 from app.routers.evaluations import router as evaluations_router
@@ -37,7 +37,7 @@ app = FastAPI(
 # --------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # tighten later
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,8 +52,7 @@ app.include_router(evaluators_router, prefix="/evaluators", tags=["Evaluators"])
 app.include_router(templates_router, prefix="/templates", tags=["Templates"])
 app.include_router(sessions_router, prefix="/sessions", tags=["Sessions"])
 app.include_router(metrics_router, prefix="/dashboard", tags=["Dashboard"])
-app.include_router(prompts_router, tags=["Prompts"])
-app.include_router(audit_router)  # prefix already set in router
+app.include_router(audit_router)
 
 # --------------------------------------------------
 # Root endpoint
