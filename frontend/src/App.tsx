@@ -18,6 +18,7 @@ import Annotations from "./pages/Annotations";
 import Audit from "./pages/Audit";
 import Settings from "./pages/Settings";
 import Prompts from "./pages/Prompts";
+import CreatePrompt from "./pages/CreatePrompt";
 import CreateTemplate from "./pages/CreateTemplate";
 import CreateEvaluator from "./pages/CreateEvaluator";
 import LoginPage from "./pages/LoginPage";
@@ -66,18 +67,22 @@ function ProtectedLayout() {
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-[1400px] mx-auto">
             <Routes>
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="traces" element={<Traces />} />
-              <Route path="sessions" element={<Sessions />} />
-              <Route path="evaluators" element={<Evaluators />} />
-              <Route path="evaluators/new" element={<CreateEvaluator />} />
-              <Route path="templates/new" element={<CreateTemplate />} />
-              <Route path="annotations" element={<Annotations />} />
-              <Route path="prompts" element={<Prompts />} />
-              <Route path="alerts" element={<Alerts />} />
-              <Route path="datasets" element={<Datasets />} />
-              <Route path="audit" element={<Audit />} />
-              <Route path="settings" element={<Settings />} />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/sessions" element={<Sessions />} />
+              <Route path="/traces" element={<Traces />} />
+
+              <Route path="/evaluators" element={<Evaluators />} />
+
+              <Route path="/evaluators/new" element={<CreateEvaluator />} />
+              <Route path="/templates/new" element={<CreateTemplate />} />
+              <Route path="/annotations" element={<Annotations />} />
+              <Route path="/prompts" element={<Prompts />} />
+              <Route path="/prompts/new" element={<CreatePrompt />} />
+              <Route path="/alerts" element={<Alerts />} />
+              <Route path="/datasets" element={<Datasets />} />
+              <Route path="/audit" element={<Audit />} />
+              <Route path="/settings" element={<Settings />} />
 
               {/* Default inside protected layout */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
